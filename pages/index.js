@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react"
 import { ExclamationCircleIcon } from "@heroicons/react/solid"
 import { getSession } from "next-auth/react"
 import { postData } from "../fetcher"
+import Link from "next/link"
 
 export async function getServerSideProps(ctx) {
   // Fetch data from external API
@@ -53,8 +54,8 @@ function Page({ projects }) {
   }
   return (
     <div className="px-4 sm:px-6 lg:px-8">
+      <h1 className="w-full text-3xl my-4">Projects</h1>
       <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-12 grid grid-cols-12 bg-white shadow p-4 mb-4 rounded-lg"></div>
         <div className="col-span-3">
           <div
             onClick={() => setOpen(true)}
@@ -86,7 +87,13 @@ function Page({ projects }) {
           <div key={row.id} className="bg-white col-span-3 h-32 rounded-lg shadow-lg">
             <div className="flex h-full">
               <div className="m-auto">
-                <a>{row.name}</a>
+                <Link
+                  href={{
+                    pathname: `/project/` + row.apikey,
+                  }}
+                >
+                  <a className="text-indigo-600 hover:text-indigo-900">{row.name}</a>
+                </Link>
               </div>
             </div>
           </div>
