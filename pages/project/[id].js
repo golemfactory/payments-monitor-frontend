@@ -5,6 +5,20 @@ import { ExclamationCircleIcon } from "@heroicons/react/solid"
 import { getSession } from "next-auth/react"
 import { postData } from "../../fetcher"
 import Link from "next/link"
+import {
+  BellIcon,
+  ClockIcon,
+  CogIcon,
+  CreditCardIcon,
+  DocumentReportIcon,
+  HomeIcon,
+  MenuAlt1Icon,
+  QuestionMarkCircleIcon,
+  ScaleIcon,
+  ShieldCheckIcon,
+  UserGroupIcon,
+  XIcon,
+} from "@heroicons/react/outline"
 
 export async function getServerSideProps(ctx) {
   // Fetch data from external API
@@ -20,11 +34,19 @@ export async function getServerSideProps(ctx) {
       }),
     })
     const data = await res.json()
+    const fetch_overview = await fetch(process.env.NEXT_PUBLIC_API_BASE + "dashboard/project/" + ctx.query.id, {
+      method: "get",
+      headers: new Headers({
+        Authorization: "Bearer " + session.user.accessToken,
+      }),
+    })
+    const overview_data = await fetch_overview.json()
     console.log(data)
     return {
       props: {
         agreements: data,
         project_id: ctx.query.id,
+        overview: overview_data,
       },
     }
   } else {
@@ -39,7 +61,7 @@ export async function getServerSideProps(ctx) {
   // Pass data to the page via props
 }
 
-function Page({ agreements, project_id }) {
+function Page({ agreements, project_id, overview }) {
   const [open, setOpen] = useState(false)
   const [agreement, setAgreement] = useState(agreements)
   const cancelButtonRef = useRef(null)
@@ -55,12 +77,102 @@ function Page({ agreements, project_id }) {
     }
   }
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <h1 className="w-full text-3xl mt-4">Agreements</h1>
-      <span className="w-full text-gray-400 my-4">Project: {project_id}</span>
+    <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div className="mb-4">
+        <h1 className="text-3xl font-bold leading-tight text-gray-900">Agreements</h1>
+        <span className="w-full text-gray-400 my-4">Project: {project_id}</span>
+      </div>
+      <div className="grid grid-cols-12 gap-4 mb-4">
+        <div className="col-span-3 bg-white overflow-hidden shadow rounded-lg">
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <CreditCardIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
+              </div>
+              <div className="ml-5 w-0 flex-1">
+                <dl>
+                  <dt className="text-sm font-medium text-gray-500 truncate">GLM Spent</dt>
+                  <dd>
+                    <div className="text-lg font-medium text-gray-900">{overview.spendings.spendings_glm}</div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div className="bg-gray-50 px-5 py-3">
+            <div className="text-sm">
+              <a className="font-medium text-black">View all</a>
+            </div>
+          </div>
+        </div>
+        <div className="col-span-3 bg-white overflow-hidden shadow rounded-lg">
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <CreditCardIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
+              </div>
+              <div className="ml-5 w-0 flex-1">
+                <dl>
+                  <dt className="text-sm font-medium text-gray-500 truncate">MATIC Spent</dt>
+                  <dd>
+                    <div className="text-lg font-medium text-gray-900">{overview.spendings.spendings_matic}</div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div className="bg-gray-50 px-5 py-3">
+            <div className="text-sm">
+              <a className="font-medium text-black">View all</a>
+            </div>
+          </div>
+        </div>
+        <div className="col-span-3 bg-white overflow-hidden shadow rounded-lg">
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <CreditCardIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
+              </div>
+              <div className="ml-5 w-0 flex-1">
+                <dl>
+                  <dt className="text-sm font-medium text-gray-500 truncate">GLM Spent</dt>
+                  <dd>
+                    <div className="text-lg font-medium text-gray-900">{overview.provider_invoiced_amount.amount__sum}</div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div className="bg-gray-50 px-5 py-3">
+            <div className="text-sm">
+              <a className="font-medium text-black">View all</a>
+            </div>
+          </div>
+        </div>
+        <div className="col-span-3 bg-white overflow-hidden shadow rounded-lg">
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <CreditCardIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
+              </div>
+              <div className="ml-5 w-0 flex-1">
+                <dl>
+                  <dt className="text-sm font-medium text-gray-500 truncate">Activites created</dt>
+                  <dd>
+                    <div className="text-lg font-medium text-gray-900">{overview.activity_count}</div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div className="bg-gray-50 px-5 py-3">
+            <div className="text-sm">
+              <a className="font-medium text-black hover:text-cyan-900">View all</a>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-12 grid grid-cols-12 bg-white shadow p-4 mb-4 rounded-lg"></div>
-
         {agreement.map((row) => (
           <div key={row.agreement_id} className="bg-white col-span-3 h-32 rounded-lg shadow-lg">
             <div className="flex h-full">

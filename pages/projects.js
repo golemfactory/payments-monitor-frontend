@@ -13,18 +13,16 @@ export async function getServerSideProps(ctx) {
   if (session) {
     // Signed in
 
-    const res = await fetch(process.env.NEXT_PUBLIC_API_BASE + "v1/agreement/" + ctx.query.id, {
+    const res = await fetch(process.env.NEXT_PUBLIC_API_BASE + "v1/projects", {
       method: "get",
       headers: new Headers({
         Authorization: "Bearer " + session.user.accessToken,
       }),
     })
     const data = await res.json()
-    console.log(data)
     return {
       props: {
-        agreements: data,
-        project_id: ctx.query.id,
+        projects: data,
       },
     }
   } else {
@@ -39,9 +37,9 @@ export async function getServerSideProps(ctx) {
   // Pass data to the page via props
 }
 
-function Page({ agreements, project_id }) {
+function Page({ projects }) {
   const [open, setOpen] = useState(false)
-  const [agreement, setAgreement] = useState(agreements)
+  const [project, setProject] = useState(projects)
   const cancelButtonRef = useRef(null)
 
   const createProject = async (event) => {
@@ -56,21 +54,45 @@ function Page({ agreements, project_id }) {
   }
   return (
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-      <div className="mb-4">
-        <h1 className="text-3xl font-bold leading-tight text-gray-900">Agreements</h1>
-        <span className="w-full text-gray-400 my-4">Project: {project_id}</span>
-      </div>
+      <h1 className="w-full text-3xl my-4">Projects</h1>
       <div className="grid grid-cols-12 gap-4">
-        {agreement.map((row) => (
-          <div key={row.agreement_id} className="bg-white col-span-3 h-32 rounded-lg shadow-lg">
+        <div className="col-span-3">
+          <div
+            onClick={() => setOpen(true)}
+            className="mt-1 flex cursor-pointer justify-center px-6 pt-5 pb-6 border-2 h-32 border-gray-300 border-dashed rounded-md"
+          >
+            <div className="space-y-1 text-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="mx-auto h-10 w-10 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              <div className="flex text-sm text-gray-600">
+                <label
+                  htmlFor="file-upload"
+                  className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+                >
+                  <p>Create Project</p>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        {project.map((row) => (
+          <div key={row.id} className="bg-white col-span-3 h-32 rounded-lg shadow-lg">
             <div className="flex h-full">
               <div className="m-auto">
                 <Link
                   href={{
-                    pathname: `/agreement/` + row.agreement_id,
+                    pathname: `/project/` + row.apikey,
                   }}
                 >
-                  <a className="text-indigo-600 hover:text-indigo-900">{row.agreement_id.substring(0, 7)}</a>
+                  <a className="text-indigo-600 hover:text-indigo-900">{row.name}</a>
                 </Link>
               </div>
             </div>
