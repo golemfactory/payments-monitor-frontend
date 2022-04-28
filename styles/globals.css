@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.Typewriter__wrapper,
+.Typewriter {
+  @apply bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent inline-block;
+}
+
+.bggrid {
+  background: linear-gradient(to right, #ffffff 0%, #ffffff 45%, #f1f4f7 53%, #f1f4f7 100%);
+}
