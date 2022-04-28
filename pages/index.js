@@ -3,21 +3,7 @@ import Hero from "../components/main/Hero"
 import NormalNav from "../components/NormalNav"
 import { useEffect, useState } from "react"
 
-function Page({ data, stats }) {
-  const [stat, setStat] = useState(stats)
-  const fetchStats = () => {
-    fetch("https://api.stats.golem.network/v1/network/online/stats")
-      .then((r) => r.json())
-
-      .then((response) => {
-        setStat({ memory: response.memory / 1024, disk: response.disk / 1024, cores: response.threads, online: response.online })
-      })
-  }
-  useEffect(() => {
-    setInterval(() => {
-      fetchStats()
-    }, 15000)
-  }, [])
+function Page({}) {
   return (
     <>
       <Head>
@@ -45,24 +31,10 @@ function Page({ data, stats }) {
 // This gets called on every request
 export async function getServerSideProps() {
   // Fetch data from external API
-  const res = await fetch(
-    `https://blog.golemproject.net/ghost/api/v3/content/posts/?key=${process.env.BLOG_API_KEY}&include=tags,authors&limit=3`
-  )
-  const data = await res.json()
-  const fetchstats = await fetch(`https://api.stats.golem.network/v1/network/online/stats`)
-  const statsdata = await fetchstats.json()
-  const statsformatted = {
-    memory: statsdata.memory / 1024,
-    disk: statsdata.disk / 1024,
-    cores: statsdata.threads,
-    online: statsdata.online,
-  }
+
   // Pass data to the page via props
   return {
-    props: {
-      data: data,
-      stats: statsformatted,
-    },
+    props: {},
   }
 }
 
