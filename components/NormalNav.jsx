@@ -41,7 +41,7 @@ const solutions = [
     icon: RefreshIcon,
   },
   {
-    name: "GitB",
+    name: "Square",
     description: "Get detailed reports that will help you make more informed decisions ",
     href: "#",
     icon: DocumentReportIcon,
