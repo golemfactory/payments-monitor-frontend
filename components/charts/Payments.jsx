@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic"
+import Golem from "../svg/Golem"
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false })
 import React, { useEffect, useState } from "react"
@@ -80,7 +81,9 @@ export default function Stats(props) {
             <h1 className=" mb-2 font-semibold text-2xl">{props.title}</h1>
             <div className="d-flex align-items-center">
               <dt>
-                <div className="absolute bg-golemblue rounded-md p-3"></div>
+                <div className="absolute bg-golemblue rounded-md p-3">
+                  <Golem className="h-6 w-6"></Golem>
+                </div>
               </dt>
               <dd className="ml-16 pb-6 sm:pb-7">
                 <div className="relative">
