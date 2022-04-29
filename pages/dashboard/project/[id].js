@@ -5,7 +5,7 @@ import { getSession } from "next-auth/react"
 import { postData } from "../../../fetcher"
 import Link from "next/link"
 import Navbar from "../../../components/Navbar"
-import Payments from "../../../components/charts/payments"
+import Payments from "../../../components/charts/Payments"
 import { CalendarIcon, CreditCardIcon, ClockIcon, PhotographIcon, TableIcon, ViewBoardsIcon, ViewListIcon } from "@heroicons/react/outline"
 
 const items = [

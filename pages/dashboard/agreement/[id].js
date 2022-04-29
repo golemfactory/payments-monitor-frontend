@@ -1,7 +1,7 @@
 import { getSession } from "next-auth/react"
 import React, { useState, useEffect } from "react"
 import { useRouter } from "next/router"
-import Navbar from "../../components/Navbar"
+import Navbar from "../../../components/Navbar"
 export async function getServerSideProps(ctx) {
   // Fetch data from external API
 
