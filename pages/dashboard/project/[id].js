@@ -168,7 +168,7 @@ function Page({ agreements, project_id, overview }) {
           <h1 className="text-3xl font-bold leading-tight text-gray-900">Project Name</h1>
           <span className="w-full text-gray-400 my-4">{project_id}</span>
         </div>
-        {overview != undefined ? (
+        {overview != undefined && agreement.length != undefined ? (
           <div className="grid grid-cols-12 gap-4 mb-4">
             {chartload == true ? (
               <>
@@ -202,7 +202,7 @@ function Page({ agreements, project_id, overview }) {
                   <div className="m-auto">
                     <Link
                       href={{
-                        pathname: `/agreement/` + row.agreement_id,
+                        pathname: `/dashboard/agreement/` + row.agreement_id,
                       }}
                     >
                       <a className="text-indigo-600 hover:text-indigo-900">{row.agreement_id.substring(0, 7)}</a>
