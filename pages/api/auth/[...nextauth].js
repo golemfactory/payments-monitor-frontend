@@ -57,7 +57,7 @@ export default NextAuth({
         })
         const user = await res.json()
         if (!res.ok) {
-          throw new Error(user.exception)
+          throw new Error(user.detail)
         }
         // If no error and we have user data, return it
         if (res.ok && user) {
@@ -69,6 +69,9 @@ export default NextAuth({
       },
     }),
   ],
+  pages: {
+    signIn: "/auth/login",
+  },
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days

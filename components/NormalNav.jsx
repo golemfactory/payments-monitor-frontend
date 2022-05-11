@@ -395,10 +395,15 @@ const Navbar = () => {
             </Popover.Group>
           </div>
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-2">
+          <Link href="/auth/signup">
+            <button className="mt-3 w-full px-6 py-3 border border-black text-base font-medium rounded-md text-black bg-white shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:flex-shrink-0 sm:inline-flex sm:items-center sm:w-auto">
+              Sign up
+            </button>
+          </Link>
           <Link href="/dashboard">
             <button className="mt-3 w-full px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-black shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:flex-shrink-0 sm:inline-flex sm:items-center sm:w-auto">
-              Get Started
+              Dashboard
             </button>
           </Link>
         </div>
