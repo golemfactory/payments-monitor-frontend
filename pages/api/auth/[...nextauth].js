@@ -1,7 +1,7 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 
-async function refreshAccessToken(token) {
+async function refreshAccessToken(token, username) {
   try {
     const url = process.env.NEXT_PUBLIC_API_BASE + "api/token/refresh/"
     const res = await fetch(url, {
@@ -22,6 +22,7 @@ async function refreshAccessToken(token) {
       accessTokenExpires: new Date().getTime() / 1000 + 299, // add 300 seconds
       refreshTokenExpires: new Date().getTime() / 1000 + 86300,
       refreshToken: refreshedTokens.refresh ?? token.refresh, // Fall back to old refresh token
+      username: username,
     }
   } catch (error) {
     console.log(error)
@@ -94,6 +95,7 @@ export default NextAuth({
           accessTokenExpires: new Date().getTime() / 1000 + 299, // add 300 seconds
           refreshTokenExpires: new Date().getTime() / 1000 + 86300,
           refreshToken: user.refresh,
+          username: user.username,
         }
       }
       // If date is less than access expiration, then return token
@@ -104,7 +106,7 @@ export default NextAuth({
       else {
         // First check if refresh token expiration date is over
         if (new Date().getTime() / 1000 < token.refreshTokenExpires) {
-          return refreshAccessToken(token.refreshToken)
+          return refreshAccessToken(token.refreshToken, token.username)
         } else {
           return "/api/auth/signin"
         }
@@ -116,6 +118,7 @@ export default NextAuth({
       session.user.refreshToken = token.refreshToken
       session.user.accessTokenExpires = token.accessTokenExpires
       session.user.refreshTokenExpires = token.refreshTokenExpires
+      session.user.username = token.username
       return session
     },
   },

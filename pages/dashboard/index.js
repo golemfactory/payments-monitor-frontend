@@ -40,6 +40,7 @@ export async function getServerSideProps(ctx) {
   // Fetch data from external API
 
   const session = await getSession(ctx)
+  console.log(session)
   if (session) {
     // Signed in
 
@@ -53,6 +54,7 @@ export async function getServerSideProps(ctx) {
     return {
       props: {
         projects: data,
+        username: session.user.username,
       },
     }
   } else {
@@ -67,7 +69,7 @@ export async function getServerSideProps(ctx) {
   // Pass data to the page via props
 }
 
-export default function Example({ projects }) {
+export default function Example({ projects, username }) {
   const [open, setOpen] = useState(false)
   const [project, setProject] = useState(projects)
   const cancelButtonRef = useRef(null)
@@ -97,7 +99,7 @@ export default function Example({ projects }) {
       <div className="fixed top-0 right-0 w-1/2 h-full bg-gray-50" aria-hidden="true" />
       <div className="relative min-h-full flex flex-col">
         {/* Navbar */}
-        <Disclosure as="nav" className="flex-shrink-0 bg-indigo-600">
+        <Disclosure as="nav" className="flex-shrink-0 bg-golemblue">
           {({ open }) => (
             <>
               <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
@@ -253,7 +255,7 @@ export default function Example({ projects }) {
                           />
                         </div>
                         <div className="space-y-1">
-                          <div className="text-sm font-medium text-gray-900">Username_goes_here</div>
+                          <div className="text-sm font-medium text-gray-900">{username}</div>
                           <a href="#" className="group flex items-center space-x-2.5">
                             <svg
                               className="h-5 w-5 text-gray-400 group-hover:text-gray-500"
@@ -276,7 +278,7 @@ export default function Example({ projects }) {
                         <button
                           onClick={() => setOpen(true)}
                           type="button"
-                          className="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 xl:w-full"
+                          className="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-golemblue hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 xl:w-full"
                         >
                           New Project
                         </button>
