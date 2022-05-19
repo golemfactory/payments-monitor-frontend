@@ -1,10 +1,10 @@
 import React, { useState, useRef } from "react"
-import { ExclamationCircleIcon } from "@heroicons/react/solid"
 import { getSession } from "next-auth/react"
 import { postData } from "../../fetcher"
-import Link from "next/link"
-import Navbar from "../../components/Navbar"
+
 import { Fragment } from "react"
+import Logs from "../../components/Logs"
+import DisplayProjects from "../../components/Projects"
 import { Disclosure, Menu, Transition, Dialog } from "@headlessui/react"
 import {
   BadgeCheckIcon,
@@ -13,23 +13,15 @@ import {
   CollectionIcon,
   SearchIcon,
   SortAscendingIcon,
-  StarIcon,
+  UserGroupIcon,
 } from "@heroicons/react/solid"
 import { MenuAlt1Icon, XIcon } from "@heroicons/react/outline"
 
-const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Domains", href: "#", current: false },
-]
+const navigation = [{ name: "Dashboard", href: "#", current: true }]
 const userNavigation = [
   { name: "Your Profile", href: "#" },
   { name: "Settings", href: "#" },
   { name: "Sign out", href: "#" },
-]
-
-const activityItems = [
-  { project: "Workcation", commit: "2d89f0c8", environment: "production", time: "1h" },
-  // More items...
 ]
 
 function classNames(...classes) {
@@ -51,9 +43,18 @@ export async function getServerSideProps(ctx) {
       }),
     })
     const data = await res.json()
+
+    const fetch_logs = await fetch(process.env.NEXT_PUBLIC_API_BASE + "dashboard/overview", {
+      method: "get",
+      headers: new Headers({
+        Authorization: "Bearer " + session.user.accessToken,
+      }),
+    })
+    const log_data = await fetch_logs.json()
     return {
       props: {
         projects: data,
+        logs: log_data,
         username: session.user.username,
       },
     }
@@ -69,9 +70,11 @@ export async function getServerSideProps(ctx) {
   // Pass data to the page via props
 }
 
-export default function Example({ projects, username }) {
+export default function Example({ projects, username, logs }) {
   const [open, setOpen] = useState(false)
   const [project, setProject] = useState(projects)
+  const [log, setLog] = useState(logs)
+  console.log(log)
   const cancelButtonRef = useRef(null)
 
   const createProject = async (event) => {
@@ -162,11 +165,7 @@ export default function Example({ projects, username }) {
                         <div>
                           <Menu.Button className="bg-indigo-700 flex text-sm rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-indigo-700 focus:ring-white">
                             <span className="sr-only">Open user menu</span>
-                            <img
-                              className="h-8 w-8 rounded-full"
-                              src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80"
-                              alt=""
-                            />
+                            <img className="h-8 w-8 rounded-full" src="/golem-blue-bg.png" alt="" />
                           </Menu.Button>
                         </div>
                         <Transition
@@ -248,11 +247,7 @@ export default function Example({ projects, username }) {
                       {/* Profile */}
                       <div className="flex items-center space-x-3">
                         <div className="flex-shrink-0 h-12 w-12">
-                          <img
-                            className="h-12 w-12 rounded-full"
-                            src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80"
-                            alt=""
-                          />
+                          <img className="h-12 w-12 rounded-full" src="/golem-blue-bg.png" alt="" />
                         </div>
                         <div className="space-y-1">
                           <div className="text-sm font-medium text-gray-900">{username}</div>
@@ -292,7 +287,7 @@ export default function Example({ projects, username }) {
                       </div>
                       <div className="flex items-center space-x-2">
                         <CollectionIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                        <span className="text-sm text-gray-500 font-medium">8 Projects</span>
+                        <span className="text-sm text-gray-500 font-medium">{project.length} Projects</span>
                       </div>
                     </div>
                   </div>
@@ -348,76 +343,7 @@ export default function Example({ projects, username }) {
                   </Menu>
                 </div>
               </div>
-              <ul role="list" className="relative z-0 divide-y divide-gray-200 border-b border-gray-200">
-                {projects.map((project) => (
-                  <li key={project.id} className="relative pl-4 pr-6 py-5 hover:bg-gray-50 sm:py-6 sm:pl-6 lg:pl-8 xl:pl-6">
-                    <div className="flex items-center justify-between space-x-4">
-                      {/* Repo name and link */}
-                      <div className="min-w-0 space-y-3">
-                        <div className="flex items-center space-x-3">
-                          <span
-                            className={classNames(
-                              project.active ? "bg-green-100" : "bg-gray-100",
-                              "h-4 w-4 rounded-full flex items-center justify-center"
-                            )}
-                            aria-hidden="true"
-                          >
-                            <span className={classNames(project.active ? "bg-green-400" : "bg-gray-400", "h-2 w-2 rounded-full")} />
-                          </span>
-
-                          <span className="block">
-                            <h2 className="text-sm font-medium">
-                              <a href={project.href}>
-                                <span className="absolute inset-0" aria-hidden="true" />
-                                {project.name} <span className="sr-only">{project.active ? "Running" : "Not running"}</span>
-                              </a>
-                            </h2>
-                          </span>
-                        </div>
-                        <a href={project.repoHref} className="relative group flex items-center space-x-2.5">
-                          <svg
-                            className="flex-shrink-0 w-5 h-5 text-gray-400 group-hover:text-gray-500"
-                            viewBox="0 0 18 18"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            aria-hidden="true"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M8.99917 0C4.02996 0 0 4.02545 0 8.99143C0 12.9639 2.57853 16.3336 6.15489 17.5225C6.60518 17.6053 6.76927 17.3277 6.76927 17.0892C6.76927 16.8762 6.76153 16.3104 6.75711 15.5603C4.25372 16.1034 3.72553 14.3548 3.72553 14.3548C3.31612 13.316 2.72605 13.0395 2.72605 13.0395C1.9089 12.482 2.78793 12.4931 2.78793 12.4931C3.69127 12.5565 4.16643 13.4198 4.16643 13.4198C4.96921 14.7936 6.27312 14.3968 6.78584 14.1666C6.86761 13.5859 7.10022 13.1896 7.35713 12.965C5.35873 12.7381 3.25756 11.9665 3.25756 8.52116C3.25756 7.53978 3.6084 6.73667 4.18411 6.10854C4.09129 5.88114 3.78244 4.96654 4.27251 3.72904C4.27251 3.72904 5.02778 3.48728 6.74717 4.65082C7.46487 4.45101 8.23506 4.35165 9.00028 4.34779C9.76494 4.35165 10.5346 4.45101 11.2534 4.65082C12.9717 3.48728 13.7258 3.72904 13.7258 3.72904C14.217 4.96654 13.9082 5.88114 13.8159 6.10854C14.3927 6.73667 14.7408 7.53978 14.7408 8.52116C14.7408 11.9753 12.6363 12.7354 10.6318 12.9578C10.9545 13.2355 11.2423 13.7841 11.2423 14.6231C11.2423 15.8247 11.2313 16.7945 11.2313 17.0892C11.2313 17.3299 11.3937 17.6097 11.8501 17.522C15.4237 16.3303 18 12.9628 18 8.99143C18 4.02545 13.97 0 8.99917 0Z"
-                              fill="currentcolor"
-                            />
-                          </svg>
-                          <span className="text-sm text-gray-500 group-hover:text-gray-900 font-medium truncate">If_project_repo</span>
-                        </a>
-                      </div>
-                      <div className="sm:hidden">
-                        <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                      </div>
-                      {/* Repo meta info */}
-                      <div className="hidden sm:flex flex-col flex-shrink-0 items-end space-y-3">
-                        <p className="flex items-center space-x-4">
-                          <Link
-                            href={{
-                              pathname: `/dashboard/project/` + project.apikey,
-                            }}
-                          >
-                            <a className="relative text-sm text-gray-500 hover:text-gray-900 font-medium">View Project</a>
-                          </Link>
-                        </p>
-                        <p className="flex text-gray-500 text-sm space-x-2">
-                          <span>{project.tech}</span>
-                          <span aria-hidden="true">&middot;</span>
-                          <span>Last change {project.lastDeploy}</span>
-                          <span aria-hidden="true">&middot;</span>
-                          <span>{project.location}</span>
-                        </p>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <DisplayProjects projects={project} />
             </div>
           </div>
           {/* Activity feed */}
@@ -427,33 +353,7 @@ export default function Example({ projects, username }) {
                 <h2 className="text-sm font-semibold">Activities</h2>
               </div>
               <div>
-                <ul role="list" className="divide-y divide-gray-200">
-                  {activityItems.map((item) => (
-                    <li key={item.commit} className="py-4">
-                      <div className="flex space-x-3">
-                        <img
-                          className="h-6 w-6 rounded-full"
-                          src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80"
-                          alt=""
-                        />
-                        <div className="flex-1 space-y-1">
-                          <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-medium">You</h3>
-                            <p className="text-sm text-gray-500">{item.time}</p>
-                          </div>
-                          <p className="text-sm text-gray-500">
-                            Deployed {item.project} ({item.commit} in master) to {item.environment}
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-                <div className="py-4 text-sm border-t border-gray-200">
-                  <a href="#" className="text-indigo-600 font-semibold hover:text-indigo-900">
-                    View all activity <span aria-hidden="true">&rarr;</span>
-                  </a>
-                </div>
+                <Logs logs={log.logs}></Logs>
               </div>
             </div>
           </div>
