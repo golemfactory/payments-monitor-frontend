@@ -108,7 +108,7 @@ function Page({ agreements, project_id, overview }) {
   const [maticchart, setMaticChart] = useState({})
   const [agreement, setAgreement] = useState(agreements)
   const cancelButtonRef = useRef(null)
-  console.log(overview)
+  console.log(agreements)
 
   const createProject = async (event) => {
     event.preventDefault() // don't redirect the page
@@ -165,7 +165,7 @@ function Page({ agreements, project_id, overview }) {
       <Navbar></Navbar>
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="mb-4">
-          <h1 className="text-3xl font-bold leading-tight text-gray-900">Project Name</h1>
+          <h1 className="text-3xl font-bold leading-tight text-gray-900">{overview.project_name}</h1>
           <span className="w-full text-gray-400 my-4">{project_id}</span>
         </div>
         {overview != undefined && agreement.length != undefined ? (
@@ -196,21 +196,88 @@ function Page({ agreements, project_id, overview }) {
         ) : null}
         <div className="grid grid-cols-12 gap-4">
           {agreement.length != undefined ? (
-            agreement.map((row) => (
-              <div key={row.agreement_id} className="bg-white col-span-3 h-32 rounded-lg shadow-lg">
-                <div className="flex h-full">
-                  <div className="m-auto">
-                    <Link
-                      href={{
-                        pathname: `/dashboard/agreement/` + row.agreement_id,
-                      }}
+            <table className="v-table divide-y-12 divide-gray-900  w-full inline-block lg:table md:table xl:table col-span-12">
+              <thead className="bg-gray-900">
+                <tr>
+                  <th scope="col" className="px-6 py-5 text-left text-xs font-medium text-white uppercase tracking-wider rounded-l-lg">
+                    Agreement ID
+                  </th>
+                  <th scope="col" className="px-6 py-5 text-left text-xs font-medium text-white uppercase tracking-wider">
+                    Amount Due
+                  </th>
+                  <th scope="col" className="px-6 py-5 text-left text-xs font-medium text-white uppercase tracking-wider">
+                    Amount Paid
+                  </th>
+                  <th scope="col" className="px-6 py-5 text-left text-xs font-medium text-white uppercase tracking-wider">
+                    % Paid
+                  </th>
+                  <th scope="col" className="px-6 py-5 text-left text-xs font-medium text-white uppercase tracking-wider">
+                    Provider
+                  </th>
+                  <th scope="col" className="px-6 py-5 text-left text-xs font-medium text-white uppercase tracking-wider rounded-r-lg">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="">
+                {agreement.map((row) => (
+                  <Link
+                    href={{
+                      pathname: `/dashboard/agreement/` + row.agreement_id,
+                    }}
+                  >
+                    <tr
+                      key={row.agreement_id}
+                      className={classNames(0 == 0 ? "hover:bg-gray-300  cursor-pointer my-12 golemtr" : " my-12 golemtr")}
                     >
-                      <a className="text-indigo-600 hover:text-indigo-900">{row.agreement_id.substring(0, 7)}</a>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            ))
+                      <td className="px-6 py-4 rounded-l-lg">
+                        <div className="flex items-center">
+                          <div className="ml-4 relative">
+                            <div className="text-sm font-medium text-gray-900 golemtext ">{row.agreement_id.substring(0, 7)}.. </div>
+
+                            <div className="text-sm text-gray-500 golemtext">Available Globally</div>
+                          </div>
+                        </div>
+                      </td>
+                      {row.amount_due > 10 ? (
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm font-medium text-gray-900 golemtext">{row.amount_due.substring(0, 10)}..</span>
+                        </td>
+                      ) : (
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm font-medium text-gray-900 golemtext">{row.amount_due}</span>
+                        </td>
+                      )}
+                      {row.amount_paid > 10 ? (
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm font-medium text-gray-900 golemtext">{row.amount_paid.substring(0, 10)}..</span>
+                        </td>
+                      ) : (
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm font-medium text-gray-900 golemtext">{row.amount_paid}</span>
+                        </td>
+                      )}
+
+                      {row.amount_paid == 0 ? (
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm font-medium text-gray-900 golemtext">0</span>
+                        </td>
+                      ) : (
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm font-medium text-gray-900 golemtext">{(row.amount_due / row.amount_paid) * 100}</span>
+                        </td>
+                      )}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <span className="text-sm font-medium text-gray-900 golemtext">{row.offer_properties["golem.node.id.name"]}</span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <span className="text-sm font-medium text-gray-900 golemtext">{row.state}</span>
+                      </td>
+                    </tr>
+                  </Link>
+                ))}
+              </tbody>
+            </table>
           ) : (
             <div className="col-span-12">
               <div>

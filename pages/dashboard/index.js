@@ -17,7 +17,7 @@ import {
 } from "@heroicons/react/solid"
 import { MenuAlt1Icon, XIcon } from "@heroicons/react/outline"
 
-const navigation = [{ name: "Dashboard", href: "#", current: true }]
+const navigation = [{ name: "Dashboard", href: "/dashboard", current: true }]
 const userNavigation = [
   { name: "Your Profile", href: "#" },
   { name: "Settings", href: "#" },
