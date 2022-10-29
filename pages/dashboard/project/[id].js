@@ -6,6 +6,7 @@ import { postData } from "../../../fetcher"
 import Link from "next/link"
 import Navbar from "../../../components/Navbar"
 import Payments from "../../../components/charts/Payments"
+import Counter from "../../../components/charts/Counter"
 import { CalendarIcon, CreditCardIcon, ClockIcon, PhotographIcon, TableIcon, ViewBoardsIcon, ViewListIcon } from "@heroicons/react/outline"
 
 const items = [
@@ -108,7 +109,7 @@ function Page({ agreements, project_id, overview }) {
   const [maticchart, setMaticChart] = useState({})
   const [agreement, setAgreement] = useState(agreements)
   const cancelButtonRef = useRef(null)
-  console.log(agreements)
+  console.log(overview)
 
   const createProject = async (event) => {
     event.preventDefault() // don't redirect the page
@@ -172,6 +173,16 @@ function Page({ agreements, project_id, overview }) {
           <div className="grid grid-cols-12 gap-4 mb-4">
             {chartload == true ? (
               <>
+                <div className="col-span-3">
+                  <Counter title="Activites running" count="5"></Counter>
+                </div>
+                <div className="col-span-3">
+                  <Counter title="Pending invoices" count="2"></Counter>
+                </div>
+                <div className="col-span-3">
+                  <Counter title="Pending Payments" count="0.483 GLM"></Counter>
+                </div>
+                <div className="col-span-2"></div>
                 <div className="col-span-6">
                   {" "}
                   <Payments
@@ -230,14 +241,8 @@ function Page({ agreements, project_id, overview }) {
                       key={row.agreement_id}
                       className={classNames(0 == 0 ? "hover:bg-gray-300  cursor-pointer my-12 golemtr" : " my-12 golemtr")}
                     >
-                      <td className="px-6 py-4 rounded-l-lg">
-                        <div className="flex items-center">
-                          <div className="ml-4 relative">
-                            <div className="text-sm font-medium text-gray-900 golemtext ">{row.agreement_id.substring(0, 7)}.. </div>
-
-                            <div className="text-sm text-gray-500 golemtext">Available Globally</div>
-                          </div>
-                        </div>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm font-medium text-gray-900 golemtext">{row.agreement_id.substring(0, 7)}..</span>
                       </td>
                       {row.amount_due > 10 ? (
                         <td className="px-6 py-4 whitespace-nowrap">
